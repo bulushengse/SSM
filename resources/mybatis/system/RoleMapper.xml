@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="RoleMapper">
+	
+	<resultMap type="Role" id="roleResultMap">
+		<id column="ROLE_ID" property="ROLE_ID"/>
+		<result column="ROLE_NAME" property="ROLE_NAME"/>
+		<result column="RIGHTS" property="RIGHTS"/>
+	</resultMap>
+	
+	<!-- 列出二级角色信息 -->
+	<select id="listAllERRoles" resultMap="roleResultMap">
+		select 
+			"ROLE_ID",
+			"ROLE_NAME",
+			"RIGHTS",
+			"PARENT_ID",
+			"ADD_QX",
+			"DEL_QX",
+			"EDIT_QX",
+			"CHA_QX",
+			"QX_ID"
+		from "SYS_ROLE" 
+		where 
+			"PARENT_ID" != '0'
+	</select>
+
+	<!-- 列出此角色下的所有用户 -->
+	<select id="listAllUByRid"  parameterType="pd" resultType="pd" >
+		select "USER_ID"
+		from "SYS_USER"
+		where 
+		"ROLE_ID" = #{ROLE_ID}
+	</select>
+	
+	<!-- 给全部子职位加菜单权限 -->
+	<update id="setAllRights" parameterType="pd">
+		update "SYS_ROLE" 
+		set "RIGHTS"=#{rights} 
+		where "PARENT_ID"=#{roleId}
+	</update>
+	
+	<!-- 根据id修改add权限 -->
+	<update id="add_qx" parameterType="pd">
+		update "SYS_ROLE" 
+		set "ADD_QX"=#{value} 
+		where ROLE_ID=#{ROLE_ID}
+	</update>
+	
+	<!-- 根据id修改del权限 -->
+	<update id="del_qx" parameterType="pd">
+		update "SYS_ROLE" 
+		set DEL_QX=#{value} 
+		where ROLE_ID=#{ROLE_ID}
+	</update>
+	
+	<!-- 根据id修改edit权限  -->
+	<update id="edit_qx" parameterType="pd">
+		update "SYS_ROLE" 
+		set EDIT_QX=#{value} 
+		where ROLE_ID=#{ROLE_ID}
+	</update>
+	
+	<!--根据id修改cha权限 -->
+	<update id="cha_qx" parameterType="pd">
+		update "SYS_ROLE" 
+		set CHA_QX=#{value} 
+		where ROLE_ID=#{ROLE_ID}
+	</update>
+	
+	<!--根据id修改check权限 -->
+	<update id="check_qx" parameterType="pd">
+		update "SYS_ROLE" 
+		set CHECK_QX=#{value} 
+		where ROLE_ID=#{ROLE_ID}
+	</update>
+
+	<!-- 列出所有顶级角色 -->
+	<select id="listAllRoles" resultMap="roleResultMap">
+		select 
+			"ROLE_ID",
+			"ROLE_NAME",
+			"RIGHTS",
+			"PARENT_ID",
+			"ADD_QX",
+			"DEL_QX",
+			"EDIT_QX",
+			"CHA_QX",
+			"QX_ID"
+		from "SYS_ROLE" 
+		where "PARENT_ID" = '0'
+		and "ROLE_ID" != '1'   <!-- 去掉系统管理员 -->   
+		ORDER BY "ROLE_ID"
+	</select>
+	
+	<!-- 列出所有子角色 -->
+	<select id="listAllRolesByPId" resultMap="roleResultMap">
+		select 
+			"ROLE_ID",
+			"ROLE_NAME",
+			"RIGHTS",
+			"PARENT_ID",
+			"ADD_QX",
+			"DEL_QX",
+			"EDIT_QX",
+			"CHA_QX",
+			"QX_ID"
+		from "SYS_ROLE"  
+		where 
+			"PARENT_ID" = #{ROLE_ID}
+		ORDER BY "ROLE_ID"
+	</select>
+	
+	<!-- 根据id查询角色 -->
+	<select id="getRoleById" parameterType="String" resultMap="roleResultMap">
+		select * from "SYS_ROLE" 
+		where "ROLE_ID"=#{roleId}
+	</select>
+	
+	<!-- 根据id查询角色菜单权限 -->
+	<update id="updateRoleRights" parameterType="Role">
+		update "SYS_ROLE" 
+		set "RIGHTS"=#{RIGHTS} 
+		where "ROLE_ID"=#{ROLE_ID}
+	</update>
+	
+	<!-- 根据id删除 -->
+	<delete id="deleteRoleById" parameterType="String">
+		delete from "SYS_ROLE" 
+		where "ROLE_ID"=#{ROLE_ID}
+	</delete>
+
+	<!-- 新增-->
+	<insert id="insert" parameterType="pd">
+		insert into "SYS_ROLE" (
+			"ROLE_ID",
+			"ROLE_NAME",
+			"RIGHTS",
+			"PARENT_ID",
+			"ADD_QX",
+			"DEL_QX",
+			"EDIT_QX",
+			"CHA_QX",
+			"QX_ID"
+		) values (
+			#{ROLE_ID},
+			#{ROLE_NAME},
+			#{RIGHTS},
+			#{PARENT_ID},
+			#{ADD_QX},
+			#{DEL_QX},
+			#{EDIT_QX},
+			#{CHA_QX},
+			#{QX_ID}
+		)
+	</insert>
+	
+	<!-- 通过id查找 -->
+	<select id="findObjectById" parameterType="pd" resultType="pd">
+		select  
+			"ROLE_ID",
+			"ROLE_NAME",
+			"RIGHTS",
+			"PARENT_ID",
+			"ADD_QX",
+			"DEL_QX",
+			"EDIT_QX",
+			"CHA_QX"
+		from "SYS_ROLE" 
+		where "ROLE_ID" = #{ROLE_ID}
+	</select>
+	
+	<!-- 编辑角色 -->
+	<update id="edit" parameterType="pd">
+		update "SYS_ROLE" 
+		set "ROLE_NAME" = #{ROLE_NAME}
+		where "ROLE_ID" = #{ROLE_ID}
+	</update>
+</mapper>

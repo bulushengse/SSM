@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="CustMapper">
+	
+	<!-- 新增-->
+	<insert id="save" parameterType="pd" >
+		insert into "TB_CUST"(
+			"CUST_NAME",	
+			"CUST_TYPE_ID",	
+			"CUST_ADDR",	
+			"CUST_CONTECT",	
+			"CUST_PHONE",	
+			"CUST_ID"
+		) values (
+			#{CUST_NAME},	
+			#{CUST_TYPE_ID},	
+			#{CUST_ADDR},	
+			#{CUST_CONTECT},	
+			#{CUST_PHONE},	
+			#{CUST_ID}
+		)
+	</insert>
+	
+	
+	<!-- 删除-->
+	<delete id="delete" parameterType="pd">
+		delete from "TB_CUST"
+		where 
+			"CUST_ID" = #{CUST_ID}
+	</delete>
+	
+	
+	<!-- 修改 -->
+	<update id="edit" parameterType="pd">
+		update  "TB_CUST"
+			set 
+				"CUST_NAME" = #{CUST_NAME},	
+				"CUST_TYPE_ID" = #{CUST_TYPE_ID},
+				"CUST_ADDR" = #{CUST_ADDR},	
+				"CUST_CONTECT" = #{CUST_CONTECT},	
+				"CUST_PHONE" = #{CUST_PHONE}
+			where 
+				"CUST_ID" = #{CUST_ID}
+	</update>
+	
+	
+	<!-- 通过ID获取数据 -->
+	<select id="findById" parameterType="pd" resultType="pd">
+		select 
+			c."CUST_NAME",	
+			ct."CUST_TYPE_NAME",
+			ct."CUST_TYPE_ID",	
+			c."CUST_ADDR",	
+			c."CUST_CONTECT",	
+			c."CUST_PHONE",	
+			c."CUST_ID"
+		from 
+			"TB_CUST" c,"TB_CUST_TYPE" ct
+		where 
+			c."CUST_TYPE_ID" = ct."CUST_TYPE_ID" 
+			and c."CUST_ID" = #{CUST_ID}
+	</select>
+	
+	
+	<!-- 列表 -->
+	<select id="datalistPage" parameterType="page" resultType="pd">
+		select
+				c."CUST_NAME",	
+				ct."CUST_TYPE_NAME",	
+				c."CUST_ADDR",	
+				c."CUST_CONTECT",	
+				c."CUST_PHONE",	
+				c."CUST_ID"
+		from 
+				"TB_CUST" c,"TB_CUST_TYPE" ct
+		where	c."CUST_TYPE_ID" = ct."CUST_TYPE_ID" 
+				and c."CUST_ID" != '1'
+		<if test="pd.CUST_TYPE_ID != null and pd.CUST_TYPE_ID != ''">  
+			and c."CUST_TYPE_ID" = #{pd.CUST_TYPE_ID} 
+		</if>
+		<if test="pd.search != null and pd.search != ''">
+			and 	
+				(
+					c."CUST_NAME" LIKE #{pd.search}
+					or
+					c."CUST_CONTECT" LIKE #{pd.search}
+					or
+					ct."CUST_TYPE_NAME" LIKE #{pd.searchStr}
+				)
+		</if>
+		order by c."CUST_ID" desc
+	</select>
+	
+	<!-- 列表(全部) 客户+客户类别-->
+	<select id="listAll" parameterType="pd" resultType="pd">
+	select
+				c."CUST_NAME",	
+				ct."CUST_TYPE_NAME",	
+				c."CUST_ADDR",	
+				c."CUST_CONTECT",	
+				c."CUST_PHONE",	
+				c."CUST_ID"
+		from 
+				"TB_CUST" c,"TB_CUST_TYPE" ct
+		where	c."CUST_TYPE_ID" = ct."CUST_TYPE_ID" 
+		<if test="CUST_TYPE_ID != null and CUST_TYPE_ID != ''">  
+			and c."CUST_TYPE_ID" = #{CUST_TYPE_ID} 
+		</if>
+		<if test="search != null and search != ''">
+			and 	
+				(
+					c."CUST_NAME" LIKE #{search}
+					or 
+					c."CUST_CONTECT" LIKE #{search}
+					or
+					ct."CUST_TYPE_NAME" LIKE #{search}
+				)
+		</if>
+		order by c."CUST_ID" desc
+	</select>
+	
+	<!-- 列表(全部) 客户+客户类别 -->
+	<select id="listAll3" parameterType="pd" resultType="pd">
+		select
+			c."CUST_NAME",	
+			c."CUST_ID"
+		from 
+			 "TB_CUST" c 
+	</select>
+	
+</mapper>
