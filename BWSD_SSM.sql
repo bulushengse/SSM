@@ -1,11 +1,11 @@
 --创建表空间BWSD_SSM
-create tablespace BWSD_SSM
-datafile 'D:\oracle\product\10.2.0\oradata\orcl\BWSD_SSM.dbf' size 500M
-autoextend on next 1M maxsize 1000M
-extent management local;
+--create tablespace BWSD_SSM
+--datafile 'D:\oracle\product\10.2.0\oradata\orcl\BWSD_SSM.dbf' size 500M
+--autoextend on next 1M maxsize 1000M
+---extent management local;
 
 --设置默认的表空间
-alter database default tablespace BWSD_SSM;
+--alter database default tablespace BWSD_SSM;
 
 -- ----------------------------
 -- Table structure for SYS_MENU
