@@ -4,6 +4,7 @@
 	xmlns:aop="http://www.springframework.org/schema/aop" 
 	xmlns:context="http://www.springframework.org/schema/context"
 	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:task="http://www.springframework.org/schema/task"
 	xsi:schemaLocation="http://www.springframework.org/schema/beans 
 						http://www.springframework.org/schema/beans/spring-beans.xsd
 						http://www.springframework.org/schema/aop 
@@ -12,6 +13,8 @@
 						http://www.springframework.org/schema/context/spring-context.xsd
 						http://www.springframework.org/schema/tx 
 						http://www.springframework.org/schema/tx/spring-tx.xsd
+						http://www.springframework.org/schema/task
+						http://www.springframework.org/schema/task/spring-task-4.1.xsd
 	">
 
 	<!-- 启用注解 -->
@@ -141,6 +144,16 @@
 	</bean>
 	<!-- ================ Shiro end ================ -->	
 
+	<!-- ================ Task start ================ -->	
+	<!-- <task:annotation-driven /> --><!-- 定时任务开关 -->
 	
+	<bean id ="taskTest" class= "com.zhoubc.task.myTask" ></bean >
+	
+    <task:scheduled-tasks >   
+        <!--   " * * * * * * * " 每一位表示的是 [ 秒 分 时 日 月 周 年]     这里表示的是每隔5秒执行一次   -->    
+        <task:scheduled ref ="taskTest" method="print" cron= "*/50 * * * * ?" />   
+       
+    </task:scheduled-tasks >
+	<!-- ================ Task start ================ -->	
    
 </beans>

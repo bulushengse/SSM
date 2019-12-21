@@ -10,7 +10,7 @@
 				<li class="active" id="mbfwindex">
 					<a  style="font-size:16px" style="cursor:pointer;" class="dropdown-toggle"><i style="font-size:21px" class="icon-dashboard" ></i><span>首页</span><b class="arrow icon-angle-down"></b></a>
 					<ul class="submenu">
-						<li><a href="main/index">首页</a></li>					  
+						<li><a  href="main/index">首页</a></li>					  
 					</ul>
 				</li>
 			<c:forEach items="${menuList}" var="menu">

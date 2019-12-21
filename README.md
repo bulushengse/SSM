@@ -1,6 +1,4 @@
-# bootstrop_websocket_shiro_SSM_druid
-
-通用后台管理系统
+# 通用后台管理系统
 
 ssm基本架构+bootstrop前端+websocket通信+shiro验校权限+druid数据库连接池+oracle数据库
 
@@ -18,4 +16,9 @@ ssm基本架构+bootstrop前端+websocket通信+shiro验校权限+druid数据库
 
 2019.2.19
 物流信息查询，IP或GPS定位
+
+2019.6.16
+spring task定时任务
+
+
 

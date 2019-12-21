@@ -287,7 +287,7 @@ public class LoginController extends BaseController {
 	 * @return
 	 * @throws Exception
 	 */
-	@RequestMapping(value = "/logout")
+	@RequestMapping(value = "/logout_logout")
 	public ModelAndView logout() throws Exception{
 		logBefore(logger,"用户"+getUid()+",请求注销");
 		ModelAndView mv = this.getModelAndView();
@@ -295,7 +295,6 @@ public class LoginController extends BaseController {
 		// shiro管理的session
 		Subject currentUser = SecurityUtils.getSubject();
 		Session session = currentUser.getSession();
-		log(logger,"注销成功");
 		session.removeAttribute(Const.SESSION_USER);
 		session.removeAttribute(Const.SESSION_ROLE_RIGHTS);
 		session.removeAttribute(Const.SESSION_allmenuList);
@@ -309,12 +308,12 @@ public class LoginController extends BaseController {
 		// shiro销毁登录
 		Subject subject = SecurityUtils.getSubject();
 		subject.logout();
-
+		log(logger,"注销成功");
+		
 		pd = this.getPageData();
-		String msg = pd.getString("msg");
-		pd.put("msg", msg);
-
+		pd.put("msg", pd.getString("msg"));
 		pd.put("SYSNAME", Tools.readTxtFile(Const.SYSNAME)); // 读取系统名称
+		
 		mv.setViewName("system/admin/login");
 		mv.addObject("pd", pd);
 		logAfter(logger);

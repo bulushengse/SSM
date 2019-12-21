@@ -22,7 +22,7 @@
 							<li id="productCode"><a onclick="productCode();" style="cursor:pointer;"><i class="icon-cogs"></i> 代码生成</a></li> 
 							<li id="webMonitor"><a onclick="webMonitor();" style="cursor:pointer;"><i class="icon-exclamation-sign"></i> web监控</a></li> 
 							<li class="divider"></li>
-							<li><a href="logout"><i class="icon-off"></i> 退出</a></li>
+							<li><a href="logout_logout"><i class="icon-off"></i> 退出</a></li>
 						</ul>
 					</li>
 			  </ul><!--/.ace-nav-->

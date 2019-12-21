@@ -58,28 +58,26 @@ public class PicturesController extends BaseController {
 	@RequestMapping(value = "/save")
 	@ResponseBody
 	public Object save(@RequestParam(required = false) MultipartFile file) throws Exception {
-		logBefore(logger, "新增Pictures");
+		logBefore(logger, "用户"+getUid()+",新增Pictures");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		Map<String, String> map = new HashMap<String, String>();
 		String ffile = DateUtil.getDays(), fileName = "";
 		PageData pd = new PageData();
-		if (Jurisdiction.buttonJurisdiction(menuUrl, "add")) {
-			if (null != file && !file.isEmpty()) {
-				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile; // 文件上传路径
-				fileName = FileUpload.fileUp(file, filePath, this.get32UUID()); // 执行上传
-			} else {
-				System.out.println("上传失败");
-			}
-
-			pd.put("PICTURES_ID", this.get32UUID()); // 主键
-			pd.put("TITLE", "图片"); // 标题
-			pd.put("NAME", fileName); // 文件名
-			pd.put("PATH", ffile + "/" + fileName); // 路径
-			pd.put("CREATETIME", Tools.date2Str(new Date())); // 创建时间
-			pd.put("MASTER_ID", "1"); // 附属与
-			pd.put("BZ", "图片管理处上传"); // 备注
-			Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);// 加水印
-			picturesService.save(pd);
+		if (null != file && !file.isEmpty()) {
+			String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile; // 文件上传路径
+			fileName = FileUpload.fileUp(file, filePath, this.get32UUID()); // 执行上传
+		} else {
+			log(logger, "选取的文件路径不存在...");
 		}
+		pd.put("PICTURES_ID", this.get32UUID()); // 主键
+		pd.put("TITLE", "图片"); // 标题
+		pd.put("NAME", fileName); // 文件名
+		pd.put("PATH", ffile + "/" + fileName); // 路径
+		pd.put("CREATETIME", Tools.date2Str(new Date())); // 创建时间
+		pd.put("MASTER_ID", "1"); // 附属
+		pd.put("BZ", "图片管理处上传"); // 备注
+		Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);// 加水印
+		picturesService.save(pd);
 		map.put("result", "ok");
 		return AppUtil.returnObject(pd, map);
 	}
@@ -89,20 +87,19 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/delete")
 	public void delete(PrintWriter out) {
-		logBefore(logger, "删除Pictures");
+		logBefore(logger, "用户"+getUid()+",删除Pictures");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return;} //校验权限
 		PageData pd = new PageData();
 		try {
-			if (Jurisdiction.buttonJurisdiction(menuUrl, "del")) {
-				pd = this.getPageData();
-				DelAllFile.delFolder(PathUtil.getClasspath() + Const.FILEPATHIMG + pd.getString("PATH")); // 删除图片
-				picturesService.delete(pd);
-			}
+			pd = this.getPageData();
+			DelAllFile.delFolder(PathUtil.getClasspath() + Const.FILEPATHIMG + pd.getString("PATH")); // 删除图片
+			picturesService.delete(pd);
 			out.write("success");
 			out.close();
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}
-
+		logAfter(logger);
 	}
 
 	/**
@@ -112,34 +109,33 @@ public class PicturesController extends BaseController {
 	public ModelAndView edit(HttpServletRequest request, @RequestParam(value = "tp", required = false) MultipartFile file, @RequestParam(value = "tpz", required = false) String tpz,
 			@RequestParam(value = "PICTURES_ID", required = false) String PICTURES_ID, @RequestParam(value = "TITLE", required = false) String TITLE, @RequestParam(value = "MASTER_ID", required = false) String MASTER_ID,
 			@RequestParam(value = "BZ", required = false) String BZ) throws Exception {
-		logBefore(logger, "修改Pictures");
+		logBefore(logger, "用户"+getUid()+",修改Pictures");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
-		
-		if (Jurisdiction.buttonJurisdiction(menuUrl, "edit")) {
-			pd.put("PICTURES_ID", PICTURES_ID); // 图片ID
-			pd.put("TITLE", TITLE); // 标题
-			pd.put("MASTER_ID", MASTER_ID); // 属于ID
-			pd.put("BZ", BZ); // 备注
+		pd.put("PICTURES_ID", PICTURES_ID); // 图片ID
+		pd.put("TITLE", TITLE); // 标题
+		pd.put("MASTER_ID", MASTER_ID); // 属于ID
+		pd.put("BZ", BZ); // 备注
 
-			if (null == tpz) {
-				tpz = "";
-			}
-			String ffile = DateUtil.getDays(), fileName = "";
-			if (null != file && !file.isEmpty()) {
-				String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile; // 文件上传路径
-				fileName = FileUpload.fileUp(file, filePath, this.get32UUID()); // 执行上传
-				pd.put("PATH", ffile + "/" + fileName); // 路径
-				pd.put("NAME", fileName);
-			} else {
-				pd.put("PATH", tpz);
-			}
-			Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);// 加水印
-			picturesService.edit(pd); // 执行修改数据库
+		if (null == tpz) {
+			tpz = "";
 		}
+		String ffile = DateUtil.getDays(), fileName = "";
+		if (null != file && !file.isEmpty()) {
+			String filePath = PathUtil.getClasspath() + Const.FILEPATHIMG + ffile; // 文件上传路径
+			fileName = FileUpload.fileUp(file, filePath, this.get32UUID()); // 执行上传
+			pd.put("PATH", ffile + "/" + fileName); // 路径
+			pd.put("NAME", fileName);
+		} else {
+			pd.put("PATH", tpz);
+		}
+		Watermark.setWatemark(PathUtil.getClasspath() + Const.FILEPATHIMG + ffile + "/" + fileName);// 加水印
+		picturesService.edit(pd); // 执行修改数据库
 		mv.addObject("msg", "success");
 		mv.setViewName("save_result");
+		logAfter(logger);
 		return mv;
 	}
 
@@ -148,12 +144,11 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/list")
 	public ModelAndView list(Page page) {
-		logBefore(logger, "列表Pictures");
+		logBefore(logger, "用户"+getUid()+",请求显示Pictures列表");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		try {
 			pd = this.getPageData();
-			
 			String KEYW = pd.getString("keyword");
 			if (null != KEYW && !"".equals(KEYW)) {
 				KEYW = KEYW.trim();
@@ -168,6 +163,7 @@ public class PicturesController extends BaseController {
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}
+		logAfter(logger);
 		return mv;
 	}
 
@@ -176,7 +172,6 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/goAdd")
 	public ModelAndView goAdd() {
-		logBefore(logger, "去新增Pictures页面");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -194,7 +189,6 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/goEdit")
 	public ModelAndView goEdit() {
-		logBefore(logger, "去修改Pictures页面");
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -215,35 +209,34 @@ public class PicturesController extends BaseController {
 	@RequestMapping(value = "/deleteAll")
 	@ResponseBody
 	public Object deleteAll() {
-		logBefore(logger, "批量删除Pictures");
+		logBefore(logger, "用户"+getUid()+",批量删除Pictures");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "del")){return null;}
 		PageData pd = new PageData();
 		Map<String, Object> map = new HashMap<String, Object>();
 		try {
 			pd = this.getPageData();
-			if (Jurisdiction.buttonJurisdiction(menuUrl, "del")) {
-				List<PageData> pdList = new ArrayList<PageData>();
-				List<PageData> pathList = new ArrayList<PageData>();
-				String DATA_IDS = pd.getString("DATA_IDS");
-				if (null != DATA_IDS && !"".equals(DATA_IDS)) {
-					String ArrayDATA_IDS[] = DATA_IDS.split(",");
-					pathList = picturesService.getAllById(ArrayDATA_IDS);
-					// 删除图片
-					for (int i = 0; i < pathList.size(); i++) {
-						DelAllFile.delFolder(PathUtil.getClasspath() + Const.FILEPATHIMG + pathList.get(i).getString("PATH"));
-					}
-					picturesService.deleteAll(ArrayDATA_IDS);
-					pd.put("msg", "ok");
-				} else {
-					pd.put("msg", "no");
+			List<PageData> pdList = new ArrayList<PageData>();
+			List<PageData> pathList = new ArrayList<PageData>();
+			String DATA_IDS = pd.getString("DATA_IDS");
+			if (null != DATA_IDS && !"".equals(DATA_IDS)) {
+				String ArrayDATA_IDS[] = DATA_IDS.split(",");
+				pathList = picturesService.getAllById(ArrayDATA_IDS);
+				// 删除图片
+				for (int i = 0; i < pathList.size(); i++) {
+					DelAllFile
+							.delFolder(PathUtil.getClasspath() + Const.FILEPATHIMG + pathList.get(i).getString("PATH"));
 				}
-				pdList.add(pd);
-				map.put("list", pdList);
+				picturesService.deleteAll(ArrayDATA_IDS);
+				pd.put("msg", "ok");
+			} else {
+				pd.put("msg", "no");
 			}
+			pdList.add(pd);
+			map.put("list", pdList);
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
-		} finally {
-			logAfter(logger);
-		}
+		} 
+		logAfter(logger);
 		return AppUtil.returnObject(pd, map);
 	}
 
@@ -253,7 +246,8 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/excel")
 	public ModelAndView exportExcel() {
-		logBefore(logger, "导出Pictures到excel");
+		logBefore(logger, "用户"+getUid()+",导出Pictures列表到excel");
+		if(!Jurisdiction.buttonJurisdiction(menuUrl, "cha")){return null;}
 		ModelAndView mv = new ModelAndView();
 		PageData pd = new PageData();
 		pd = this.getPageData();
@@ -290,6 +284,7 @@ public class PicturesController extends BaseController {
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}
+		logAfter(logger);
 		return mv;
 	}
 
@@ -299,7 +294,7 @@ public class PicturesController extends BaseController {
 	 */
 	@RequestMapping(value = "/deltp")
 	public void deltp(PrintWriter out) {
-		logBefore(logger, "删除图片");
+		logBefore(logger, "用户"+getUid()+",删除图片");
 		try {
 			PageData pd = new PageData();
 			pd = this.getPageData();
@@ -313,6 +308,7 @@ public class PicturesController extends BaseController {
 		} catch (Exception e) {
 			logger.error(e.toString(), e);
 		}
+		logAfter(logger);
 	}
 
 	@InitBinder

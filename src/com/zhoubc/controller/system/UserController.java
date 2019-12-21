@@ -74,8 +74,8 @@ public class UserController extends BaseController {
 		
 		pd.put("USER_ID", this.get32UUID());// ID
 		pd.put("RIGHTS", ""); 				// 权限
-		pd.put("LAST_LOGIN", ""); 			// 最后登录时间
-		pd.put("IP", ""); 					// IP
+		pd.put("LAST_LOGIN", ""); 		// 最后登录时间
+		pd.put("IP", ""); 					        // IP
 		pd.put("STATUS", "0"); 				// 状态
 		pd.put("SKIN", "default");			// 默认皮肤
 

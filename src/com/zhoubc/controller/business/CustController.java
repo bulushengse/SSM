@@ -51,16 +51,12 @@ public class CustController extends BaseController {
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "add")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
-		try {
-			pd = this.getPageData();
-			pd.put("CUST_ID", this.get32UUID());
-			custService.save(pd);
-			log(logger, "新增Cust  ID:"+pd.getString("CUST_ID"));
-			mv.addObject("msg","success");
-			mv.setViewName("save_result");
-		} catch(Exception e) {
-			logger.error(e.toString(), e);
-		}
+		pd = this.getPageData();
+		pd.put("CUST_ID", this.get32UUID());
+		custService.save(pd);
+		log(logger, "新增Cust  ID:" + pd.getString("CUST_ID"));
+		mv.addObject("msg", "success");
+		mv.setViewName("save_result");
 		logAfter(logger);
 		return mv;
 	}
@@ -95,15 +91,11 @@ public class CustController extends BaseController {
 		if(!Jurisdiction.buttonJurisdiction(menuUrl, "edit")){return null;} //校验权限
 		ModelAndView mv = this.getModelAndView();
 		PageData pd = new PageData();
-		try {
-			pd = this.getPageData();
-			custService.edit(pd);
-			log(logger, "修改Cust  ID:"+pd.getString("CUST_ID"));
-			mv.addObject("msg","success");
-			mv.setViewName("save_result");
-		} catch(Exception e) {
-			logger.error(e.toString(), e);
-		}
+		pd = this.getPageData();
+		custService.edit(pd);
+		log(logger, "修改Cust  ID:" + pd.getString("CUST_ID"));
+		mv.addObject("msg", "success");
+		mv.setViewName("save_result");
 		logAfter(logger);
 		return mv;
 	}
